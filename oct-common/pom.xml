@@ -1,0 +1,23 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.simon</groupId>
+        <artifactId>october-cloud</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>oct-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>oct 公共聚合模块</description>
+
+    <modules>
+        <module>oct-common-bom</module>
+        <module>oct-common-core</module>
+        <module>oct-common-datasource</module>
+    </modules>
+
+</project>
