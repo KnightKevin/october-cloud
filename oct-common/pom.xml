@@ -18,6 +18,7 @@
         <module>oct-common-bom</module>
         <module>oct-common-core</module>
         <module>oct-common-datasource</module>
+        <module>oct-common-feign</module>
     </modules>
 
 </project>
