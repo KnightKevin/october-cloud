@@ -1,5 +1,6 @@
 package com.simon.oct.common.feign.sentinel.ext;
 
+import com.alibaba.cloud.sentinel.feign.SentinelContractHolder;
 import feign.Contract;
 import feign.Feign;
 import feign.InvocationHandlerFactory;
@@ -47,7 +48,7 @@ public class OctoberSentinelFeign {
         public Feign build() {
             super.invocationHandlerFactory(new InvocationHandlerFactory() {
                 @Override
-                public InvocationHandler create(Target target, Map<Method, MethodHandler> map) {
+                public InvocationHandler create(Target target, Map<Method, MethodHandler> dispatch) {
                     FeignClient feignClient = AnnotationUtils.findAnnotation(target.type(), FeignClient.class);
                     Class<?> fallback = feignClient.fallback();
                     Class<?> fallbackFactory = feignClient.fallbackFactory();
@@ -61,24 +62,35 @@ public class OctoberSentinelFeign {
                     FallbackFactory<?> fallbackFactoryInstance;
                     if (void.class != fallback) {
                         fallbackInstance = getFromContext(beanName, "fallback", fallback, target.type());
-
+                        return new OctoberSentinelInvocationHandler(target, dispatch, new FallbackFactory.Default(fallbackInstance));
                     }
+
+                    if (void.class != fallbackFactory) {
+                        fallbackFactoryInstance = (FallbackFactory<?>) getFromContext(beanName, "fallbackFactory", fallbackFactory, FallbackFactory.class);
+                        return new OctoberSentinelInvocationHandler(target, dispatch, fallbackFactoryInstance);
+                    }
+
+                    return new OctoberSentinelInvocationHandler(target, dispatch);
+                }
+
+                private Object getFromContext(String name, String type, Class<?> fallbackType, Class<?> targetType) {
+                    Object fallbackInstance = feignContext.getInstance(name, fallbackType);
+                    if (fallbackInstance == null) {
+                        throw new IllegalStateException(String.format(
+                                "No %s instance of type %s found for feign client %s", type, fallbackType, name));
+                    }
+
+                    if (!targetType.isAssignableFrom(fallbackType)) {
+                        throw new IllegalStateException(String.format(
+                                "Incompatible %s instance. Fallback/fallbackFactory of type %s is not assignable to %s for feign client %s",
+                                type, fallbackType, targetType, name));
+                    }
+                    return fallbackInstance;
                 }
             });
+
+            super.contract(new SentinelContractHolder(contract));
             return super.build();
-        }
-
-        private Object getFromContext(String name, String type, Class<?> fallbackType, Class<?> targetType) {
-            Object fallbackInstance = feignContext.getInstance(name, fallbackType);
-            if (fallbackInstance == null) {
-                throw new IllegalStateException(String.format("No %s instance of %s found for feign client %s", type, fallbackType, name));
-            }
-
-            if (!targetType.isAssignableFrom(fallbackType)) {
-                throw new IllegalStateException(String.format("Incompatible %s instance. Fallback/fallbackFactory of type %s is not assignable to %s for feign client %s", type, fallbackType, targetType, name));
-            }
-
-            return fallbackInstance;
         }
 
         @Override

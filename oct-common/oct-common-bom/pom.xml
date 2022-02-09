@@ -39,6 +39,26 @@
                 <version>${oct.common.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.simon</groupId>
+                <artifactId>oct-common-feign</artifactId>
+                <version>${oct.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.simon</groupId>
+                <artifactId>oct-common-mybatis</artifactId>
+                <version>${oct.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.simon</groupId>
+                <artifactId>oct-common-security</artifactId>
+                <version>${oct.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.simon</groupId>
+                <artifactId>oct-upms-api</artifactId>
+                <version>${oct.common.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.security.oauth.boot</groupId>
                 <artifactId>spring-security-oauth2-autoconfigure</artifactId>
                 <version>${security.oauth.version}</version>

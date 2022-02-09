@@ -39,6 +39,9 @@
 
     <modules>
         <module>oct-common</module>
+        <module>oct-upms</module>
+        <module>oct-gateway</module>
+        <module>oct-auth</module>
     </modules>
     <!-- 以下依赖全局所有模块都会被引入 -->
     <dependencies>
